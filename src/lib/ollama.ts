@@ -1,8 +1,7 @@
+import { Ollama } from 'ollama';
 import { Skill } from '@/types/skill';
 
-const OLLAMA_API_KEY = process.env.OLLAMA_API_KEY!;
-const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'kimi-k2.5:cloud';
-const OLLAMA_API_URL = process.env.OLLAMA_API_URL || 'https://api.ollama.ai/v1/chat/completions';
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'llama3.1';
 
 interface GenerateFakeSkillParams {
   prompt: string;
@@ -28,7 +27,6 @@ FORMATO EXACTO - NO AÑADAS NADA MÁS:
 name: ${name}
 description: [cuándo usarla, con ironía. Máx 200 caracteres]
 ---
-
 # [Título en ${language}]
 
 ## Quick start
@@ -45,29 +43,25 @@ description: [cuándo usarla, con ironía. Máx 200 caracteres]
 El prompt del usuario es: "${prompt}"
 Crea una skill falsa pero realista en ${language}.`;
 
-  const response = await fetch(OLLAMA_API_URL, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${OLLAMA_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
+  try {
+    const ollama = new Ollama({
+      host: process.env.OLLAMA_API_URL,
+      headers: { Authorization: 'Bearer ' + process.env.OLLAMA_API_KEY },
+    })
+
+    const response = await ollama.chat({
       model: OLLAMA_MODEL,
       messages: [{ role: 'user', content: systemPrompt }],
-      max_tokens: 1500,
-      temperature: 0.7,
-    }),
-  });
+    });
 
-  if (!response.ok) {
-    throw new Error(`Ollama API error: ${response.status}`);
-  }
+    if (!response.message?.content) {
+      console.error(response);
+      throw new Error('Invalid response format from Ollama API');
+    }
 
-  const data = await response.json();
-  
-  if (!data.choices || !data.choices[0] || !data.choices[0].message?.content) {
-    throw new Error('Invalid response format from Ollama API');
+    return response.message.content;
+  } catch (error) {
+    console.error('Error calling Ollama:', error);
+    throw new Error(`Ollama API error: ${error}`);
   }
-  
-  return data.choices[0].message.content;
 }

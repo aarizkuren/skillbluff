@@ -13,8 +13,15 @@ const handle = app.getRequestHandler();
 app.prepare().then(() => {
   const server = createServer(async (req, res) => {
     try {
-      const parsedUrl = parse(req.url, true);
-      await handle(req, res, parsedUrl);
+      // Check if req.url is defined before parsing
+      if (req.url) {
+        const parsedUrl = parse(req.url, true);
+        await handle(req, res, parsedUrl);
+      } else {
+        // Handle case where req.url is undefined
+        res.statusCode = 400;
+        res.end('Bad Request: URL is missing');
+      }
     } catch (err) {
       console.error('Error occurred handling', req.url, err);
       res.statusCode = 500;

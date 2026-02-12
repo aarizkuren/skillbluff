@@ -10,13 +10,15 @@ async function getSkill(id: string): Promise<Skill | null> {
     const data = await fs.readFile(DATA_PATH, 'utf-8');
     const { skills } = JSON.parse(data);
     return skills.find((s: Skill) => s.id === id) || null;
-  } catch {
+  } catch (error) {
+    console.error(error)
     return null;
   }
 }
 
 export default async function SkillPage({ params }: { params: { id: string } }) {
-  const skill = await getSkill(params.id);
+  const id = params.id
+  const skill = await getSkill(id);
 
   if (!skill) {
     return (
