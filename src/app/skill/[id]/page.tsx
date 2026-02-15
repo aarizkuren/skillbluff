@@ -1,19 +1,9 @@
-import { promises as fs } from 'fs';
-import path from 'path';
 import Link from 'next/link';
 import { Skill } from '@/types/skill';
-
-const DATA_PATH = path.join(process.cwd(), 'src', 'data', 'skills.json');
+import { getSkillById } from '@/lib/supabase';
 
 async function getSkill(id: string): Promise<Skill | null> {
-  try {
-    const data = await fs.readFile(DATA_PATH, 'utf-8');
-    const { skills } = JSON.parse(data);
-    return skills.find((s: Skill) => s.id === id) || null;
-  } catch (error) {
-    console.error(error)
-    return null;
-  }
+  return getSkillById(id);
 }
 
 export default async function SkillPage({ params }: { params: { id: string } }) {

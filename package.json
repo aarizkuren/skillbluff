@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/express": "^5.0.6",
     "autoprefixer": "^10.4.24",

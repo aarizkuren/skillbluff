@@ -2,23 +2,7 @@ import { NextResponse } from 'next/server';
 import { generateFakeSkill } from '@/lib/ollama';
 import { detectLanguage, normalizeName, generateId, validateWordCount, countWords } from '@/lib/utils';
 import { Skill } from '@/types/skill';
-import { promises as fs } from 'fs';
-import path from 'path';
-
-const DATA_PATH = path.join(process.cwd(), 'src', 'data', 'skills.json');
-
-async function loadSkills(): Promise<{ skills: Skill[] }> {
-  try {
-    const data = await fs.readFile(DATA_PATH, 'utf-8');
-    return JSON.parse(data);
-  } catch {
-    return { skills: [] };
-  }
-}
-
-async function saveSkills(skills: { skills: Skill[] }): Promise<void> {
-  await fs.writeFile(DATA_PATH, JSON.stringify(skills, null, 2));
-}
+import { saveSkill } from '@/lib/supabase';
 
 export async function POST(request: Request) {
   try {
@@ -70,10 +54,8 @@ export async function POST(request: Request) {
       wordCount: countWords(content),
     };
 
-    // Guardar en JSON
-    const data = await loadSkills();
-    data.skills.unshift(skill);
-    await saveSkills(data);
+    // Guardar en Supabase
+    await saveSkill(skill);
 
     return NextResponse.json({ success: true, skill });
   } catch (error) {

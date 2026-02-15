@@ -1,9 +1,13 @@
 import type { NextConfig } from "next";
-/**
- * @type {import('next').NextConfig}
- */
+
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  // Configuración para Vercel - permite Server Actions
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '1mb',
+    },
+  },
 };
 
 export default nextConfig;

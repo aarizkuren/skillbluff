@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎭 Fake Skill Generator
 
-## Getting Started
+Generador de skills falsas para Claude Code con un toque de humor. Crea skills absurdas pero creíbles que parodian el formato SKILL.md.
 
-First, run the development server:
+## Características
+
+- 📝 Genera skills irónicas a partir de cualquier prompt
+- 🔗 Comparte skills generadas con URL única
+- 🌍 Soporte multiidioma (detección automática)
+- ☁️ Persistencia en Supabase (funciona en Vercel)
+
+## Configuración
+
+### 1. Variables de entorno
+
+Copia `.env.local.example` a `.env.local` y configura:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=https://tu-proyecto.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=tu-anon-key
+
+# Ollama (para generar el contenido)
+OLLAMA_API_URL=https://api.ollama.com
+OLLAMA_API_KEY=tu-api-key
+OLLAMA_MODEL=llama3.1
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Base de datos Supabase
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Ejecuta el SQL en `supabase/migrations/001_create_skills_table.sql` en el SQL Editor de Supabase para crear la tabla.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Instalación
 
-## Learn More
+```bash
+npm install
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Abre [http://localhost:3000](http://localhost:3000).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deploy en Vercel
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Conecta tu repo a Vercel
+2. Añade las variables de entorno en Vercel Dashboard → Settings → Environment Variables
+3. Deploy automático en cada push
 
-## Deploy on Vercel
+## Cómo funciona
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Escribe lo que quieres que haga la skill (ej: "regar las plantas de mi casa")
+2. El sistema genera una SKILL.md falsa usando Ollama
+3. Se guarda en Supabase y se genera una URL para compartir
+4. El resultado es hilarante pero parece profesional
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Tecnologías
+
+- Next.js 16 + React 19
+- TypeScript
+- Tailwind CSS v4
+- Supabase (PostgreSQL)
+- Ollama (generación de texto)
+
+---
+
+*Parodia de las skills de Claude Code. No te tomes esto en serio.* 😄
