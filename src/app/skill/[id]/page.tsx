@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Skill } from '@/types/skill';
 import { getSkillById } from '@/lib/supabase';
+import ShareButton from './ShareButton';
 
 // Forzar renderizado dinámico - las skills se crean en runtime
 export const dynamic = 'force-dynamic';
@@ -53,15 +54,7 @@ export default async function SkillPage({ params }: { params: Promise<{ id: stri
         </div>
 
         <div className="flex gap-4">
-          <button
-            onClick={() => {
-              navigator.clipboard.writeText(window.location.href);
-              alert('URL copiada al portapapeles');
-            }}
-            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded transition-colors"
-          >
-            🔗 Compartir URL
-          </button>
+          <ShareButton />
           <Link href="/" className="bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded transition-colors">
             Crear otra skill
           </Link>
