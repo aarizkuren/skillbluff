@@ -2,12 +2,16 @@ import Link from 'next/link';
 import { Skill } from '@/types/skill';
 import { getSkillById } from '@/lib/supabase';
 
+// Forzar renderizado dinámico - las skills se crean en runtime
+export const dynamic = 'force-dynamic';
+export const dynamicParams = true;
+
 async function getSkill(id: string): Promise<Skill | null> {
   return getSkillById(id);
 }
 
-export default async function SkillPage({ params }: { params: { id: string } }) {
-  const id = params.id
+export default async function SkillPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const skill = await getSkill(id);
 
   if (!skill) {
