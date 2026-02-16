@@ -49,12 +49,19 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       description,
       publishedTime: skill.createdAt,
       authors: ["SkillBluff"],
+      images: [{
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: `${skill.displayName} - Fake Skill for Claude Code`,
+      }],
     },
     twitter: {
       card: "summary_large_image",
       site: "@skillbluff",
       title: `${skill.displayName} | Fake Skill`,
       description,
+      images: ["/og-image.png"],
     },
     keywords: [
       skill.name,
