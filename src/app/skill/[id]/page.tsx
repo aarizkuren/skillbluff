@@ -20,7 +20,7 @@ export default async function SkillPage({ params }: { params: Promise<{ id: stri
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl font-bold mb-4">Skill no encontrada</h1>
           <p className="text-gray-400 mb-6">
-            No existe una skill con el id: <span className="font-mono text-gray-200">{params.id}</span>
+            No existe una skill con el id: <span className="font-mono text-gray-200">{id}</span>
           </p>
           <Link href="/" className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded transition-colors">
             Volver al generador
