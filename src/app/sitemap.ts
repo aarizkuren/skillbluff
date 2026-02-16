@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next";
+import { createClient } from "@supabase/supabase-js";
 
-// ISR: Cacheado 1h, revalidable on-demand via revalidatePath('/sitemap.xml')
+// ISR: Cacheado 1h, revalidable on-demand
 export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -16,33 +17,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // Solo obtener skills si tenemos credenciales (runtime, no build)
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  
-  if (!supabaseUrl || !supabaseKey) {
-    // Durante build sin credenciales, devolver solo URLs estáticas
-    console.log("Sitemap: No Supabase credentials, returning static URLs only");
-    return staticUrls;
-  }
-
-  // Crear cliente solo cuando sea necesario
-  const { createClient } = await import("@supabase/supabase-js");
-  const supabase = createClient(supabaseUrl, supabaseKey, {
-    auth: { persistSession: false },
-  });
-
-  // Obtener todas las skills de Supabase
+  // Obtener skills de Supabase - usar credenciales del entorno actual
   try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    
+    if (!supabaseUrl || !supabaseKey) {
+      console.log("[Sitemap] Missing credentials, returning static only");
+      return staticUrls;
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseKey, {
+      auth: { persistSession: false },
+    });
+
     const { data: skills, error } = await supabase
       .from("skills")
       .select("id, created_at, updated_at")
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error("Error fetching skills for sitemap:", error);
+      console.error("[Sitemap] Supabase error:", error);
       return staticUrls;
     }
+
+    console.log(`[Sitemap] Found ${skills?.length || 0} skills`);
 
     const skillUrls: MetadataRoute.Sitemap = skills?.map((skill) => ({
       url: `${baseUrl}/skill/${skill.id}`,
@@ -53,7 +52,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     return [...staticUrls, ...skillUrls];
   } catch (error) {
-    console.error("Error generating sitemap:", error);
+    console.error("[Sitemap] Error:", error);
     return staticUrls;
   }
 }
