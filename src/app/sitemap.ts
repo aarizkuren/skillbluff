@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 
-// No crear cliente Supabase aquí - usar en runtime condicionalmente
-export const dynamic = "force-dynamic";
+// ISR: Cacheado 1h, revalidable on-demand via revalidatePath('/sitemap.xml')
+export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://skillbluff.arizkuren.net";

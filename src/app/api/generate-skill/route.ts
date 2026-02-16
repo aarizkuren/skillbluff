@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { generateFakeSkill } from '@/lib/ollama';
 import { detectLanguage, normalizeName, generateId, validateWordCount, countWords } from '@/lib/utils';
 import { Skill } from '@/types/skill';
@@ -56,6 +57,9 @@ export async function POST(request: Request) {
 
     // Guardar en Supabase
     await saveSkill(skill);
+
+    // Revalidar sitemap para que incluya la nueva skill
+    revalidatePath('/sitemap.xml');
 
     return NextResponse.json({ success: true, skill });
   } catch (error) {
