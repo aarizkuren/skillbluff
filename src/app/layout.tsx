@@ -122,6 +122,12 @@ export default function RootLayout({
             }),
           }}
         />
+        {/* Umami Analytics */}
+        <script
+          defer
+          src="https://cloud.umami.is/script.js"
+          data-website-id="078203de-e33c-469b-80b3-005e7db796c3"
+        />
       </head>
       <body className={`${inter.variable} font-sans antialiased min-h-screen`}>
         {/* Disclaimer ticker */}
