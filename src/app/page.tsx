@@ -151,35 +151,108 @@ export default function HomePage() {
             </div>
           </div>
         ) : (
-          <div className="max-w-2xl mx-auto">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="text-center mb-8">
-                <h2 className="text-xl font-semibold text-[#fafafa] mb-2">
-                  What fake skill do you need?
-                </h2>
-                <p className="text-sm text-[#666]">
-                  Describe something completely unnecessary. We'll make it official-looking.
-                </p>
+          <div className="max-w-3xl mx-auto">
+            {/* Big CTA Section */}
+            <div className="text-center mb-10">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#ff6b9d]/10 border border-[#ff6b9d]/30 mb-6">
+                <span className="w-2 h-2 bg-[#ff6b9d] rounded-full animate-pulse"></span>
+                <span className="text-sm text-[#ff6b9d] font-medium">START HERE ↓</span>
               </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-[#fafafa] mb-3">
+                What do you want to <span className="text-[#ff6b9d]">fake</span> today?
+              </h2>
+              <p className="text-lg text-[#888]">
+                Describe something absurd. We'll make it look <span className="text-[#ffd700]">official</span>.
+              </p>
+            </div>
 
-              <div className="relative">
-                <input
-                  type="text"
-                  value={prompt}
-                  onChange={(e) => {
-                    if (e.target.value.length <= 100) {
-                      handlePromptChange(e.target.value);
-                    }
-                  }}
-                  maxLength={100}
-                  placeholder="e.g., water my plants while I'm in denial..."
-                  className="input-fake"
-                  required
-                />
-                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#555]">
-                  {prompt.length}/100
+            {/* Prominent Input Container */}
+            <div className="relative bg-gradient-to-br from-[#1a1a1a] to-[#0f0f0f] rounded-2xl p-1 mb-6">
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#ff6b9d]/50 via-[#ffd700]/50 to-[#ff6b9d]/50 opacity-0 transition-opacity duration-300" 
+                   style={{ opacity: prompt ? 0.5 : 0.3 }}></div>
+              <div className="relative bg-[#0f0f0f] rounded-xl p-6 md:p-8">
+                <form onSubmit={handleSubmit}>
+                  {/* Label */}
+                  <label className="block text-sm font-medium text-[#ff6b9d] mb-3 uppercase tracking-wider">
+                    <span className="mr-2">✨</span>Enter your ridiculous request
+                  </label>
+                  
+                  {/* Big Input */}
+                  <div className="relative mb-4">
+                    <input
+                      type="text"
+                      value={prompt}
+                      onChange={(e) => {
+                        if (e.target.value.length <= 100) {
+                          handlePromptChange(e.target.value);
+                        }
+                      }}
+                      maxLength={100}
+                      placeholder="Example: water my plants while I'm in denial about their impending death..."
+                      className="w-full bg-[#1a1a1a] border-2 border-[#2a2a2a] rounded-xl px-5 py-5 text-lg text-[#fafafa] placeholder-[#444] focus:border-[#ff6b9d] focus:outline-none focus:ring-4 focus:ring-[#ff6b9d]/20 transition-all"
+                      required
+                      autoFocus
+                    />
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-[#555] bg-[#0f0f0f] px-2 py-1 rounded-full border border-[#2a2a2a]">
+                      {prompt.length}/100
+                    </div>
+                  </div>
+
+                  {/* Hint text */}
+                  {!prompt && (
+                    <p className="text-sm text-[#555] mb-4 flex items-center gap-2">
+                      <span>💡</span>
+                      <span>Tip: The more unnecessary, the better. Think "professional solutions to non-problems."</span>
+                    </p>
+                  )}
+
+                  {/* Generate Button */}
+                  <button
+                    type="submit"
+                    disabled={isLoading || !prompt.trim()}
+                    className="w-full bg-gradient-to-r from-[#ff6b9d] to-[#ff8fab] hover:from-[#ff8fab] hover:to-[#ff6b9d] text-white font-bold text-lg px-8 py-4 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 shadow-lg shadow-[#ff6b9d]/20 hover:shadow-[#ff6b9d]/40"
+                  >
+                    {isLoading ? (
+                      <>
+                        <span className="animate-spin text-2xl">⏳</span>
+                        <span>Fabricating your fake skill...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="text-2xl">🎭</span>
+                        <span>Generate Certified Fake Skill</span>
+                        <span className="text-2xl">→</span>
+                      </>
+                    )}
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            {/* Suggested name preview */}
+            {suggestedName && (
+              <div className="mb-6 p-4 bg-[#39ff14]/5 border border-[#39ff14]/20 rounded-xl">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">💡</span>
+                  <div>
+                    <span className="text-sm text-[#666]">Will be named:</span>
+                    <span className="ml-2 text-[#39ff14] font-mono font-medium">{suggestedName}</span>
+                  </div>
                 </div>
               </div>
+            )}
+
+            {/* Error */}
+            {error && (
+              <div className="mb-6 bg-[#1a0a0a] border border-[#ff6b9d]/30 rounded-xl p-4 text-[#ff6b9d]">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">⚠️</span>
+                  <span>{error}</span>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
               {suggestedName && (
                 <div className="flex items-center gap-3 text-sm text-[#666] bg-[#1a1a1a] rounded-lg px-4 py-3 border border-[#2a2a2a]">
