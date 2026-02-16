@@ -183,18 +183,18 @@ export default function HomePage() {
                       type="text"
                       value={prompt}
                       onChange={(e) => {
-                        if (e.target.value.length <= 100) {
+                        if (e.target.value.length <= 50) {
                           handlePromptChange(e.target.value);
                         }
                       }}
-                      maxLength={100}
-                      placeholder="Example: water my plants while I'm in denial about their impending death..."
+                      maxLength={50}
+                      placeholder="Example: water my plants..."
                       className="w-full bg-[#1a1a1a] border-2 border-[#2a2a2a] rounded-xl px-5 py-5 text-lg text-[#fafafa] placeholder-[#444] focus:border-[#ff6b9d] focus:outline-none focus:ring-4 focus:ring-[#ff6b9d]/20 transition-all"
                       required
                       autoFocus
                     />
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-[#555] bg-[#0f0f0f] px-2 py-1 rounded-full border border-[#2a2a2a]">
-                      {prompt.length}/100
+                      {prompt.length}/50
                     </div>
                   </div>
 

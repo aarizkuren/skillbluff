@@ -46,7 +46,7 @@ export default function ShareButton() {
   return (
     <button
       onClick={handleShare}
-      className="bg-gradient-to-r from-[#ff6b9d] to-[#ff8fab] hover:from-[#ff8fab] hover:to-[#ff6b9d] text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300 flex items-center gap-2 shadow-lg shadow-[#ff6b9d]/20 hover:shadow-[#ff6b9d]/40"
+      className="bg-gradient-to-r from-[#ff6b9d] to-[#ff8fab] hover:from-[#ff8fab] hover:to-[#ff6b9d] text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300 flex items-center gap-2 shadow-lg shadow-[#ff6b9d]/20 hover:shadow-[#ff6b9d]/40 cursor-pointer"
     >
       {error ? (
         <>
