@@ -1,17 +1,32 @@
 'use client';
 
+import { useState } from 'react';
+
 export default function ShareButton() {
+  const [copied, setCopied] = useState(false);
+
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
-    alert('URL copiada al portapapeles');
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
     <button
       onClick={handleShare}
-      className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded transition-colors"
+      className="btn-fake-primary flex items-center gap-2"
     >
-      🔗 Compartir URL
+      {copied ? (
+        <>
+          <span>✓</span>
+          <span>URL Copied (Spread the lies!)</span>
+        </>
+      ) : (
+        <>
+          <span>🔗</span>
+          <span>Share This Fake</span>
+        </>
+      )}
     </button>
   );
 }

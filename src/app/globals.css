@@ -1,31 +1,89 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-@layer base {
-  :root {
-    --background: #ffffff;
-    --foreground: #171717;
+@theme {
+  --color-bg-dark: #0f0f0f;
+  --color-bg-card: #1a1a1a;
+  --color-border: #2a2a2a;
+  --color-accent: #ff6b9d;
+  --color-accent-glow: rgba(255, 107, 157, 0.3);
+  --color-fake-gold: #ffd700;
+  --color-suspicious-green: #39ff14;
+  --color-text-primary: #fafafa;
+  --color-text-secondary: #888;
+  --color-text-muted: #666;
+  --color-text-dim: #555;
+}
+
+/* Base styles */
+body {
+  background-color: #0f0f0f;
+  color: #fafafa;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f0f0f;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2a2a2a;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ff6b9d;
+}
+
+/* Marquee animation for ticker */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
   }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --background: #0a0a0a;
-      --foreground: #ededed;
-    }
-  }
-
-  body {
-    background: hsl(var(--background));
-    color: hsl(var(--foreground));
-    font-family: Arial, Helvetica, sans-serif;
+  100% {
+    transform: translateX(-50%);
   }
 }
 
-.bg-background {
-  background: hsl(var(--background));
+.animate-marquee {
+  animation: marquee 30s linear infinite;
 }
 
-.text-foreground {
-  color: hsl(var(--foreground));
+/* Glow text effect */
+.glow-text {
+  text-shadow: 0 0 20px rgba(255, 107, 157, 0.5), 0 0 40px rgba(255, 107, 157, 0.3);
+}
+
+/* Gradient text animation */
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% center; }
+  50% { background-position: 100% center; }
+}
+
+.text-gradient-fake {
+  background: linear-gradient(90deg, #ff6b9d, #ffd700, #ff6b9d);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 3s ease infinite;
+}
+
+/* Hero gradient */
+.hero-gradient {
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a0a1a 50%, #0f0f0f 100%);
+}
+
+/* Pulse slow animation */
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
