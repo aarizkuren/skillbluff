@@ -14,8 +14,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Prompt inválido' }, { status: 400 });
     }
 
-    if (prompt.length > 200) {
-      return NextResponse.json({ error: 'Prompt demasiado largo (máx 200 chars)' }, { status: 400 });
+    if (prompt.length > 100) {
+      return NextResponse.json({ error: 'Prompt demasiado largo (máx 100 chars). Sé breve, como la vida.' }, { status: 400 });
     }
 
     // Detectar idioma

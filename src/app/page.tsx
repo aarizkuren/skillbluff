@@ -98,13 +98,22 @@ export default function HomePage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block mb-2 text-lg">¿Qué skill quieres crear?</label>
-              <textarea
+              <input
+                type="text"
                 value={prompt}
-                onChange={(e) => handlePromptChange(e.target.value)}
-                placeholder="Ej: regar las plantas de mi casa"
-                className="w-full h-32 bg-slate-800 border border-slate-700 rounded-lg p-4 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={(e) => {
+                  if (e.target.value.length <= 100) {
+                    handlePromptChange(e.target.value);
+                  }
+                }}
+                maxLength={100}
+                placeholder="Ej: regar las plantas de mi casa (máx 100 chars)"
+                className="w-full bg-slate-800 border border-slate-700 rounded-lg p-4 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
+              <div className="text-right text-sm text-gray-500 mt-1">
+                {prompt.length}/100 caracteres
+              </div>
             </div>
 
             {suggestedName && (
