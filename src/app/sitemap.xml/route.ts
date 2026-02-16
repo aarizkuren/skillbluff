@@ -38,13 +38,13 @@ export async function GET(): Promise<NextResponse> {
 
       const { data: skills, error } = await supabase
         .from("skills")
-        .select("id, created_at, updated_at")
+        .select("id, created_at")
         .order("created_at", { ascending: false });
 
       if (!error && skills && skills.length > 0) {
         const skillUrls = skills.map((skill) => ({
           loc: `${baseUrl}/skill/${skill.id}`,
-          lastmod: new Date(skill.updated_at || skill.created_at).toISOString(),
+          lastmod: new Date(skill.created_at).toISOString(),
           changefreq: "never",
           priority: "0.7",
         }));
