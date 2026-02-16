@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Skill } from '@/types/skill';
 import { getSkillById } from '@/lib/supabase';
 import ShareButton from './ShareButton';
+import SkillContent from './SkillContent';
 
 // Forzar renderizado dinámico - las skills se crean en runtime
 export const dynamic = 'force-dynamic';
@@ -109,11 +110,27 @@ export default async function SkillPage({ params }: { params: Promise<{ id: stri
             </h2>
             <div className="flex items-center gap-2">
               <span className="text-xs text-[#555]">Format:</span>
-              <span className="fake-badge text-[10px]">FAKE SKILL.md</span>
+              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-gradient-to-r from-[#ff6b9d]/20 to-[#ffd700]/20 border border-[#ff6b9d]/30 text-[#ff6b9d] text-[10px]">FAKE SKILL.md</span>
             </div>
           </div>
-          <div className="skill-content-box text-sm leading-relaxed">
-            {skill.content}
+          
+          {/* Formatted Skill Content */}
+          <div className="bg-[#0f0f0f] border border-[#2a2a2a] rounded-xl overflow-hidden">
+            {/* Header bar */}
+            <div className="flex items-center gap-2 px-4 py-3 bg-[#1a1a1a] border-b border-[#2a2a2a]">
+              <div className="flex gap-1.5">
+                <span className="w-3 h-3 rounded-full bg-[#ff6b9d]/30"></span>
+                <span className="w-3 h-3 rounded-full bg-[#ffd700]/30"></span>
+                <span className="w-3 h-3 rounded-full bg-[#39ff14]/30"></span>
+              </div>
+              <span className="ml-3 text-xs text-[#555] font-mono">skill.md</span>
+              <span className="ml-auto text-[10px] text-[#444]">read-only (obviously)</span>
+            </div>
+            
+            {/* Content with markdown-like styling */}
+            <div className="p-6 font-mono text-sm leading-relaxed">
+              <SkillContent content={skill.content} />
+            </div>
           </div>
         </div>
 

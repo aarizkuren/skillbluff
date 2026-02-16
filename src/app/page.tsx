@@ -251,41 +251,6 @@ export default function HomePage() {
                 </div>
               </div>
             )}
-          </div>
-        )}
-
-              {suggestedName && (
-                <div className="flex items-center gap-3 text-sm text-[#666] bg-[#1a1a1a] rounded-lg px-4 py-3 border border-[#2a2a2a]">
-                  <span>💡</span>
-                  <span>Will be named: <span className="text-[#ff6b9d] font-mono">{suggestedName}</span></span>
-                </div>
-              )}
-
-              {error && (
-                <div className="bg-[#1a0a0a] border border-[#ff6b9d]/30 rounded-lg p-4 text-[#ff6b9d]">
-                  <div className="flex items-center gap-2">
-                    <span>⚠️</span>
-                    <span>{error}</span>
-                  </div>
-                </div>
-              )}
-
-              <button
-                type="submit"
-                disabled={isLoading || !prompt.trim()}
-                className="w-full btn-fake-primary disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                {isLoading ? (
-                  <>
-                    <span className="animate-spin">⏳</span> Fabricating lies...
-                  </>
-                ) : (
-                  <>
-                    <span>🎭</span> Generate Certified Fake Skill
-                  </>
-                )}
-              </button>
-            </form>
 
             {/* Trust badges */}
             <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
