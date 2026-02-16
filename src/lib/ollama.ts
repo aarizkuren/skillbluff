@@ -1,7 +1,7 @@
 import { Ollama } from 'ollama';
 import { Skill } from '@/types/skill';
 
-const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'llama3.1';
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'qwen3:4b-cloud';
 
 interface GenerateFakeSkillParams {
   prompt: string;
