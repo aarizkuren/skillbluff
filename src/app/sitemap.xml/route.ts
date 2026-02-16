@@ -22,7 +22,7 @@ export async function GET(): Promise<NextResponse> {
 
   // Obtener skills de Supabase
   try {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseKey = process.env.SUPABASE_SECRET_KEY;
     
     if (supabaseUrl && supabaseKey) {
