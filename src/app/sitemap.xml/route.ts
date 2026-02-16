@@ -1,11 +1,15 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
-// API Route: siempre datos frescos, no depende del build
+// Forzar Node.js runtime (no Edge) para acceso completo a env vars
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(): Promise<NextResponse> {
   const baseUrl = "https://skillbluff.arizkuren.net";
+  
+  // DEBUG: Ver todas las variables disponibles
+  console.log('[Sitemap] All env keys:', Object.keys(process.env).filter(k => k.includes('SUPABASE')));
   
   // Fecha actual en formato ISO
   const now = new Date().toISOString();
@@ -24,6 +28,8 @@ export async function GET(): Promise<NextResponse> {
   try {
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseKey = process.env.SUPABASE_SECRET_KEY;
+    
+    console.log('[Sitemap] URL exists:', !!supabaseUrl, 'Key exists:', !!supabaseKey);
     
     if (supabaseUrl && supabaseKey) {
       const supabase = createClient(supabaseUrl, supabaseKey, {
@@ -56,7 +62,7 @@ export async function GET(): Promise<NextResponse> {
   }
 
   // Generar XML
-  const sitemapXML = `\?<?xml version="1.0" encoding="UTF-8"?>
+  const sitemapXML = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   ${urls
     .map(
