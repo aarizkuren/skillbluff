@@ -1,13 +1,14 @@
 import { createClient } from '@supabase/supabase-js';
 import { Skill } from '@/types/skill';
 
-// Usar SERVICE ROLE KEY - solo en backend (API routes y Server Components)
+// Usar SECRET KEY - solo en backend (API routes y Server Components)
 // Esta key tiene privilegios completos y NUNCA debe exponerse al frontend
+// Nota: Las Secret Keys reemplazan al antiguo SERVICE ROLE KEY (deprecated)
 const supabaseUrl = process.env.SUPABASE_URL || '';
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+const supabaseKey = process.env.SUPABASE_SECRET_KEY || '';
 
 if (!supabaseUrl || !supabaseKey) {
-  throw new Error('Missing Supabase environment variables. Check SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY');
+  throw new Error('Missing Supabase environment variables. Check SUPABASE_URL and SUPABASE_SECRET_KEY');
 }
 
 export const supabase = createClient(supabaseUrl, supabaseKey, {

@@ -19,7 +19,7 @@ Copia `.env.local.example` a `.env.local` y configura:
 ```bash
 # Supabase (solo backend, nunca expuesto al navegador)
 SUPABASE_URL=https://tu-proyecto.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=tu-service-role-key
+SUPABASE_SECRET_KEY=tu-secret-key
 
 # Ollama (solo backend)
 OLLAMA_API_URL=https://api.ollama.com
@@ -27,13 +27,16 @@ OLLAMA_API_KEY=tu-api-key
 OLLAMA_MODEL=llama3.1
 ```
 
-**Importante:** La `SUPABASE_SERVICE_ROLE_KEY` tiene privilegios completos y solo debe usarse en el backend. Nunca la expongas al frontend (no uses `NEXT_PUBLIC_`).
+**Importante:** La `SUPABASE_SECRET_KEY` (anteriormente llamada SERVICE ROLE KEY) tiene privilegios completos y solo debe usarse en el backend. Nunca la expongas al frontend (no uses `NEXT_PUBLIC_`).
+
+**Nota sobre Secret Keys:** Las Secret Keys reemplazan al antiguo "Service Role Key" que está deprecated en Supabase. Puedes obtener tu Secret Key desde:
+- Supabase Dashboard → Project Settings → Data API → Secret Keys (sección "These API keys allow privileged access")
 
 ### 2. Base de datos Supabase
 
 Ejecuta el SQL en `supabase/migrations/001_create_skills_table.sql` en el SQL Editor de Supabase para crear la tabla.
 
-Con SERVICE ROLE KEY no es necesario habilitar RLS para operaciones backend, pero puedes añadirlo si quieres acceso anónimo limitado desde frontend.
+Con SECRET KEY no es necesario habilitar RLS para operaciones backend, pero puedes añadirlo si quieres acceso anónimo limitado desde frontend.
 
 ### 3. Instalación
 
@@ -49,7 +52,7 @@ Abre [http://localhost:3000](http://localhost:3000).
 1. Conecta tu repo a Vercel
 2. Añade las variables de entorno en Vercel Dashboard → Settings → Environment Variables:
    - `SUPABASE_URL`
-   - `SUPABASE_SERVICE_ROLE_KEY`
+   - `SUPABASE_SECRET_KEY`
    - `OLLAMA_API_URL`
    - `OLLAMA_API_KEY`
 3. Deploy automático en cada push

@@ -16,8 +16,9 @@ CREATE TABLE IF NOT EXISTS skills (
 -- Crear índice para búsquedas por nombre
 CREATE INDEX IF NOT EXISTS idx_skills_name ON skills(name);
 
--- Nota: Con SERVICE ROLE KEY no es necesario RLS para operaciones backend
--- El SERVICE ROLE KEY tiene privilegios completos y bypass RLS
+-- Nota: Con SECRET KEY no es necesario RLS para operaciones backend
+-- La SECRET KEY tiene privilegios completos y bypass RLS
+-- (Reemplaza al antiguo SERVICE ROLE KEY que está deprecated)
 -- Si quieres permitir acceso anónimo limitado desde frontend, habilita RLS:
 
 -- ALTER TABLE skills ENABLE ROW LEVEL SECURITY;
