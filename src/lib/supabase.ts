@@ -1,10 +1,21 @@
 import { createClient } from '@supabase/supabase-js';
 import { Skill } from '@/types/skill';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+// Usar SERVICE ROLE KEY - solo en backend (API routes y Server Components)
+// Esta key tiene privilegios completos y NUNCA debe exponerse al frontend
+const supabaseUrl = process.env.SUPABASE_URL || '';
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
-export const supabase = createClient(supabaseUrl, supabaseKey);
+if (!supabaseUrl || !supabaseKey) {
+  throw new Error('Missing Supabase environment variables. Check SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY');
+}
+
+export const supabase = createClient(supabaseUrl, supabaseKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false,
+  },
+});
 
 export async function loadSkills(): Promise<Skill[]> {
   const { data, error } = await supabase

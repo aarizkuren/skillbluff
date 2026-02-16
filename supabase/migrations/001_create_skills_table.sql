@@ -16,13 +16,12 @@ CREATE TABLE IF NOT EXISTS skills (
 -- Crear índice para búsquedas por nombre
 CREATE INDEX IF NOT EXISTS idx_skills_name ON skills(name);
 
--- Habilitar RLS (Row Level Security) - opcional pero recomendado
-ALTER TABLE skills ENABLE ROW LEVEL SECURITY;
+-- Nota: Con SERVICE ROLE KEY no es necesario RLS para operaciones backend
+-- El SERVICE ROLE KEY tiene privilegios completos y bypass RLS
+-- Si quieres permitir acceso anónimo limitado desde frontend, habilita RLS:
 
--- Política para permitir lectura pública
-CREATE POLICY "Allow public read access" ON skills
-  FOR SELECT USING (true);
+-- ALTER TABLE skills ENABLE ROW LEVEL SECURITY;
 
--- Política para permitir inserción pública (para el generador)
-CREATE POLICY "Allow public insert" ON skills
-  FOR INSERT WITH CHECK (true);
+-- -- Permitir lectura pública (solo si necesitas acceso desde frontend)
+-- CREATE POLICY "Allow public read access" ON skills
+--   FOR SELECT USING (true);
