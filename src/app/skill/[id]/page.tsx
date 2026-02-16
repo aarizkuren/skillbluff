@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Metadata } from 'next';
 import { Skill } from '@/types/skill';
 import { getSkillById } from '@/lib/supabase';
 import ShareButton from './ShareButton';
@@ -10,6 +11,59 @@ export const dynamicParams = true;
 
 async function getSkill(id: string): Promise<Skill | null> {
   return getSkillById(id);
+}
+
+// Metadata dinámico para cada skill
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const skill = await getSkill(id);
+  
+  if (!skill) {
+    return {
+      title: "Skill Not Found",
+      description: "This fake skill doesn't exist (surprising, we know).",
+      robots: { index: false, follow: true },
+    };
+  }
+  
+  const title = `${skill.displayName} - Fake Skill for Claude Code`;
+  const description = `View the fake skill "${skill.displayName}" - A hilarious ${skill.language} skill for Claude Code. ${skill.wordCount} words of pure nonsense.`;
+  const url = `https://skillbluff.arizkuren.net/skill/${id}`;
+  
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: url,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+    openGraph: {
+      type: "article",
+      locale: skill.language === "es" ? "es_ES" : "en_US",
+      url,
+      siteName: "SkillBluff",
+      title: `${skill.displayName} | Fake Skill`,
+      description,
+      publishedTime: skill.createdAt,
+      authors: ["SkillBluff"],
+    },
+    twitter: {
+      card: "summary_large_image",
+      site: "@skillbluff",
+      title: `${skill.displayName} | Fake Skill`,
+      description,
+    },
+    keywords: [
+      skill.name,
+      "fake skill",
+      "claude code skill",
+      "mcp skill",
+      "ai skill parody",
+    ],
+  };
 }
 
 export default async function SkillPage({ params }: { params: Promise<{ id: string }> }) {
@@ -43,7 +97,40 @@ export default async function SkillPage({ params }: { params: Promise<{ id: stri
   }
 
   return (
-    <main className="min-h-screen py-12 px-6">
+    <>
+      {/* Schema.org JSON-LD for CreativeWork */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "CreativeWork",
+            name: skill.displayName,
+            description: skill.description || `A fake skill for Claude Code: ${skill.prompt}`,
+            url: `https://skillbluff.arizkuren.net/skill/${id}`,
+            author: {
+              "@type": "Organization",
+              name: "SkillBluff",
+              url: "https://skillbluff.arizkuren.net",
+            },
+            datePublished: skill.createdAt,
+            inLanguage: skill.language,
+            keywords: [skill.name, "fake skill", "claude code", "mcp", "ai parody"],
+            text: skill.content,
+            isPartOf: {
+              "@type": "WebSite",
+              name: "SkillBluff",
+              url: "https://skillbluff.arizkuren.net",
+            },
+            genre: "Satire",
+            audience: {
+              "@type": "Audience",
+              audienceType: "AI Developers",
+            },
+          }),
+        }}
+      />
+      <main className="min-h-screen py-12 px-6">
       <div className="max-w-4xl mx-auto">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-[#666] mb-6">
@@ -180,5 +267,4 @@ export default async function SkillPage({ params }: { params: Promise<{ id: stri
         </div>
       </div>
     </main>
-  );
-}
+    </>
