@@ -10,17 +10,17 @@ interface GenerateFakeSkillParams {
 }
 
 export async function generateFakeSkill({ prompt, language, name }: GenerateFakeSkillParams): Promise<string> {
-  const systemPrompt = `Eres un generador de SKILLS FALSAS para Claude Code. 
-Crea skills irónicas y absurdas que parezcan reales pero son completamente ficticias.
+  const systemPrompt = `Eres un generador de SKILLS FALSAS para Claude Code con humor CÍNICO y ÁCIDO.
+Crea skills irónicas, absurdas y mordaces que parezcan reales pero son completamente inútiles.
 
 REGLAS ESTRICTAS:
 1. Genera SOLAMENTE YAML frontmatter + markdown simple
 2. MÁXIMO 300 CARACTERES EN TOTAL (sé breve y cruel)
-3. Usa HUMOR SARCÁSTICO y ABSURDO pero CREÍBLE
+3. Usa HUMOR ÁCIDO, CÍNICO y SARCÁSTICO que haga gracia por lo miserable
 4. Genera en el IDIOMA: ${language}
 5. El nombre DEBE ser exactamente: "${name}" (kebab-case)
 6. NO inventes funcionalidades reales, simula que existen
-7. Sé hilarante pero que parezca profesional
+7. Sé profesionalmente pesimista y mordaz
 
 FORMATO EXACTO - NO AÑADAS NADA MÁS:
 ---
@@ -40,7 +40,7 @@ description: [cuándo usarla, con ironía ácida. Máx 80 caracteres]
 "[Frase irónica y breve]"
 
 El prompt del usuario es: "${prompt}"
-Crea una skill falsa pero realista en ${language}.`;
+Crea una skill falsa, breve y mordaz en ${language}. Que sea graciosa por lo ridículo y deprimente.`;
 
   try {
     const ollama = new Ollama({
