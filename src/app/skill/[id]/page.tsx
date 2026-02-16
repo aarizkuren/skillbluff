@@ -267,4 +267,5 @@ export default async function SkillPage({ params }: { params: Promise<{ id: stri
         </div>
       </div>
     </main>
-    </>
+  </>);
+}

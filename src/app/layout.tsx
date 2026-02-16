@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import Link from "next/link";
 import "./globals.css";
 
 const inter = Inter({
@@ -142,7 +143,7 @@ export default function RootLayout({
         {/* Header with semantic structure */}
         <header className="sticky top-0 z-50 bg-[#0f0f0f]/80 backdrop-blur-xl border-b border-[#2a2a2a]">
           <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-            <div className="flex items-center gap-3" itemScope itemType="https://schema.org/Organization">
+            <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity" itemScope itemType="https://schema.org/Organization">
               <span className="text-2xl" aria-label="SkillBluff Logo">🎭</span>
               <div>
                 <h1 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#ff6b9d] via-[#ffd700] to-[#ff6b9d]" itemProp="name">
@@ -152,7 +153,7 @@ export default function RootLayout({
                   NOT ENDORSED BY ANTHROPIC™
                 </p>
               </div>
-            </div>
+            </Link>
             <div className="hidden sm:flex items-center gap-4 text-xs">
               <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-[#39ff14]/10 border border-[#39ff14]/30 text-[#39ff14]">
                 <span className="w-1.5 h-1.5 bg-[#39ff14] rounded-full animate-pulse"></span>
