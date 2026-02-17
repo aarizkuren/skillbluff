@@ -29,52 +29,136 @@ function normalizeToKebabCase(str: string): string {
 }
 
 /**
- * Extrae JSON de respuesta y lo parsea
+ * Extrae el primer objeto JSON válido del texto, manejando anidamiento.
  */
 function extractJson(text: string): unknown {
-  console.log('Raw response:', text.substring(0, 300));
+  console.log('=== RAW OLLAMA RESPONSE ===');
+  console.log(text);
+  console.log('==========================');
   
   // Limpiar markdown ```json ... ```
-  let cleaned = text
+  const cleaned = text
     .replace(/```json\s*/gi, '')
     .replace(/```\s*$/gi, '')
     .trim();
   
-  // Buscar objeto JSON
-  const match = cleaned.match(/\{[\s\S]*\}/);
-  if (!match) throw new Error('No JSON found');
-  
-  // Sanitizar: escapar saltos de línea dentro de strings
-  let jsonStr = match[0];
-  let result = '';
+  // Encontrar el primer objeto JSON balanceado
+  let startIdx = -1;
+  let braceCount = 0;
   let inString = false;
   let escaped = false;
   
-  for (const char of jsonStr) {
+  for (let i = 0; i < cleaned.length; i++) {
+    const char = cleaned[i];
+    
     if (escaped) {
-      result += char;
       escaped = false;
       continue;
     }
+    
     if (char === '\\') {
-      result += char;
       escaped = true;
       continue;
     }
+    
     if (char === '"' && !escaped) {
       inString = !inString;
+      continue;
     }
-    if (inString && (char === '\n' || char === '\r')) {
-      result += '\\n';
-    } else if (inString && char === '\t') {
-      result += '\\t';
-    } else {
-      result += char;
+    
+    if (!inString) {
+      if (char === '{') {
+        if (braceCount === 0) {
+          startIdx = i;
+        }
+        braceCount++;
+      } else if (char === '}') {
+        braceCount--;
+        if (braceCount === 0 && startIdx !== -1) {
+          // Encontramos el JSON completo
+          const jsonStr = cleaned.substring(startIdx, i + 1);
+          console.log('=== EXTRACTED JSON ===');
+          console.log(jsonStr.substring(0, 500));
+          console.log('======================');
+          
+          try {
+            const parsed = JSON.parse(jsonStr);
+            console.log('✅ JSON parsed successfully');
+            return parsed;
+          } catch (e) {
+            console.log('❌ Initial parse failed, trying sanitization...');
+            // Si falla, intentar sanitizar
+            return parseWithSanitization(jsonStr);
+          }
+        }
+      }
     }
   }
   
-  console.log('Parsed JSON:', result.substring(0, 300));
-  return JSON.parse(result);
+  // Si no encontramos JSON balanceado, intentar buscar cualquier cosa entre llaves
+  console.log('⚠️ No balanced JSON found, trying fallback...');
+  const fallbackMatch = cleaned.match(/\{[\s\S]*\}/);
+  if (fallbackMatch) {
+    return parseWithSanitization(fallbackMatch[0]);
+  }
+  
+  throw new Error('No JSON found in response');
+}
+
+/**
+ * Intenta parsear JSON sanitizando caracteres problemáticos.
+ */
+function parseWithSanitization(jsonStr: string): unknown {
+  // Primero intentar parsear tal cual
+  try {
+    return JSON.parse(jsonStr);
+  } catch (e) {
+    // Si falla, sanitizar caracteres de control dentro de strings
+    let result = '';
+    let inString = false;
+    let escaped = false;
+    
+    for (const char of jsonStr) {
+      if (escaped) {
+        result += char;
+        escaped = false;
+        continue;
+      }
+      
+      if (char === '\\') {
+        result += char;
+        escaped = true;
+        continue;
+      }
+      
+      if (char === '"' && !escaped) {
+        inString = !inString;
+        result += char;
+        continue;
+      }
+      
+      if (inString) {
+        // Dentro de string: escapar caracteres de control
+        if (char === '\n') result += '\\n';
+        else if (char === '\r') result += '\\r';
+        else if (char === '\t') result += '\\t';
+        else if (char < ' ' && char !== '\n') {
+          // Otros caracteres de control, ignorar
+          continue;
+        } else {
+          result += char;
+        }
+      } else {
+        result += char;
+      }
+    }
+    
+    console.log('=== SANITIZED JSON ===');
+    console.log(result.substring(0, 500));
+    console.log('======================');
+    
+    return JSON.parse(result);
+  }
 }
 
 /**
@@ -153,6 +237,7 @@ REGLAS:
 - content: usa \\n para saltos de línea (no saltos reales)
 - description: máximo 120 caracteres
 - Sin markdown, solo JSON puro
+- IMPORTANTE: El JSON debe ser un objeto único, sin texto antes ni después
 
 Genera skill falsa y divertida en ${language} sobre: "${prompt}"`;
 

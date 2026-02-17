@@ -4,6 +4,7 @@ import { Skill } from '@/types/skill';
 import { getSkillById } from '@/lib/supabase';
 import ShareButton from './ShareButton';
 import SkillContent from './SkillContent';
+import VoteButton from './VoteButton';
 
 // Forzar renderizado dinámico - las skills se crean en runtime
 export const dynamic = 'force-dynamic';
@@ -13,7 +14,7 @@ async function getSkill(id: string): Promise<Skill | null> {
   return getSkillById(id);
 }
 
-// Metadata dinámico para cada skill
+// Metadata dinámica para cada skill
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
   const skill = await getSkill(id);
@@ -182,12 +183,8 @@ export default async function SkillPage({ params }: { params: Promise<{ id: stri
               <span className="text-xs text-[#555] font-mono">{skill.language}</span>
               <div className="flex items-center gap-3">
                 <span className="text-xs text-[#ff6b9d]">~{skill.wordCount} words of nonsense</span>
-                {/* Votos si hay más de 0 */}
-                {skill.votesCount > 0 && (
-                  <span className="vote-badge" title="Votos anónimos">
-                    <span className="text-[#ffd700]">★</span> {skill.votesCount}
-                  </span>
-                )}
+                {/* Botón de votos - header */}
+                <VoteButton skillId={skill.id} initialVotes={skill.votesCount} variant="header" />
               </div>
               {/* Uselessness score como barra visual */}
               <div className="mt-2">
@@ -306,6 +303,11 @@ export default async function SkillPage({ params }: { params: Promise<{ id: stri
           </div>
         </div>
 
+        {/* Botón de voto - footer */}
+        <div className="mb-6">
+          <VoteButton skillId={skill.id} initialVotes={skill.votesCount} variant="footer" />
+        </div>
+
         {/* Actions */}
         <div className="flex flex-wrap items-center gap-4">
           <ShareButton />
@@ -324,5 +326,6 @@ export default async function SkillPage({ params }: { params: Promise<{ id: stri
         </div>
       </div>
     </main>
-  </>);
+  </>
+  );
 }
