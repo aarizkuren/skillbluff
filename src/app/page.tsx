@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { normalizeName } from '@/lib/utils';
 
@@ -193,6 +194,18 @@ export default function HomePage() {
                 <div className="text-[10px] text-[#555]">{badge.sub}</div>
               </div>
             ))}
+          </div>
+
+          {/* Navigation to Top */}
+          <div className="mt-8 text-center">
+            <Link
+              href="/top"
+              className="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-[#ffd700]/10 to-[#ff6b9d]/10 border border-[#ffd700]/30 rounded-full text-[#ffd700] hover:border-[#ffd700]/50 hover:from-[#ffd700]/15 hover:to-[#ff6b9d]/15 transition-all"
+            >
+              <span className="text-lg">🏆</span>
+              <span className="font-medium">Hall of Shame</span>
+              <span className="text-xs text-[#888]">Las más votadas →</span>
+            </Link>
           </div>
 
           {/* How it works */}

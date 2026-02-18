@@ -30,6 +30,22 @@ export async function loadSkills(): Promise<Skill[]> {
   return (data || []).map(mapSupabaseToSkill);
 }
 
+export async function getTopSkills(page: number = 0, limit: number = 12): Promise<Skill[]> {
+  const { data, error } = await supabase
+    .from('skills')
+    .select('*')
+    .order('votes_count', { ascending: false })
+    .order('created_at', { ascending: false })
+    .range(page * limit, (page + 1) * limit - 1);
+  
+  if (error) {
+    console.error('Error loading top skills:', error);
+    return [];
+  }
+  
+  return (data || []).map(mapSupabaseToSkill);
+}
+
 export async function saveSkill(skill: Skill): Promise<void> {
   const { error } = await supabase
     .from('skills')
