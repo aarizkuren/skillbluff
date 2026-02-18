@@ -203,7 +203,7 @@ function normalizeSkillData(data: Record<string, unknown>, expectedName: string,
   
   return {
     name: normalizeToKebabCase(expectedName),
-    display_name: String(data.display_name || expectedName).slice(0, 100),
+    display_name: expectedName.slice(0, 100), // Usar el nombre/prompt del usuario, no el del LLM
     description: String(data.description || '').slice(0, 200),
     language: expectedLang === 'es' ? 'es' : 'en',
     tags: validTags,
@@ -221,18 +221,20 @@ export async function generateFakeSkill({ prompt, language, name }: GenerateFake
 FORMATO JSON EXACTO (usa estos valores específicos):
 {
   "name": "${name}",
-  "display_name": "Título creativo (máx 50 chars)",
+  "display_name": "${name}",
   "description": "Frase corta e irónica (máx 120 chars)",
   "language": "${language}",
   "tags": ["useless", "certified-fake"],
   "difficulty": "easy",
   "uselessness_score": 7,
-  "content": "# Título\\n\\nTexto del skill con \\n para saltos de línea",
+  "content": "# Título creativo del LLM aquí\\n\\nTexto del skill con \\n para saltos de línea. Puedes usar un título creativo diferente al del usuario.",
   "warnings": ["Esta skill es falsa", "No intentes esto en casa"],
   "original_prompt": "${prompt}"
 }
 
-REGLAS:
+REGLAS IMPORTANTES:
+- El display_name DEBE ser exactamente: "${name}" (el nombre que escribió el usuario)
+- El LLM puede poner su título creativo DENTRO del content (ej: "# Mi título creativo")
 - tags: SOLO puedes usar de esta lista [${VALID_TAGS.join(', ')}]
 - difficulty: SOLO puedes usar [trivial, easy, medium, hard, impossible]
 - uselessness_score: número del 1 al 10
