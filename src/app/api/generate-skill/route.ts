@@ -1,16 +1,17 @@
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { generateFakeSkill } from '@/lib/ollama';
-import { detectLanguage, normalizeName, generateId, validateWordCount, countWords } from '@/lib/utils';
+import { detectLanguage, normalizeName, generateId, countWords } from '@/lib/utils';
 import { Skill } from '@/types/skill';
 import { saveSkill } from '@/lib/supabase';
+import { FakeSkillSchema } from '@/lib/schema';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { prompt } = body;
 
-    // Validaciones
+    // Validaciones básicas
     if (!prompt || typeof prompt !== 'string' || prompt.trim().length === 0) {
       return NextResponse.json({ error: 'Prompt inválido' }, { status: 400 });
     }
@@ -28,37 +29,47 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No se pudo generar un nombre válido' }, { status: 400 });
     }
 
-    // Generar contenido con Ollama
-    const content = await generateFakeSkill({ prompt, language, name });
+    // Generar skill con Ollama (devuelve JSON)
+    const skillInput = await generateFakeSkill({ prompt, language, name });
 
-    // Validar palabras (aproximado)
-    if (!validateWordCount(content)) {
-      console.warn(`Word count validation failed: ${countWords(content)} words`);
+    // Validar con Zod
+    const validation = FakeSkillSchema.safeParse(skillInput);
+    
+    if (!validation.success) {
+      console.error('Zod validation error:', validation.error);
+      return NextResponse.json({ 
+        error: 'La skill generada no cumple el formato requerido',
+        details: validation.error.issues 
+      }, { status: 422 });
     }
+
+    const validatedData = validation.data;
 
     // Generar ID
     const id = generateId(name);
 
-    // Crear objeto Skill
-    const displayName = name.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-    const description = content.match(/description:\s*(.+)/)?.[1]?.trim() || '';
-
+    // Crear objeto Skill completo
     const skill: Skill = {
       id,
-      name,
-      displayName,
-      description,
-      prompt,
-      content,
-      language,
+      name: validatedData.name,
+      displayName: validatedData.display_name,
+      description: validatedData.description,
+      language: validatedData.language,
+      tags: validatedData.tags,
+      difficulty: validatedData.difficulty,
+      uselessnessScore: validatedData.uselessness_score,
+      votesCount: 0,
+      content: validatedData.content,
+      warnings: validatedData.warnings,
+      originalPrompt: validatedData.original_prompt,
       createdAt: new Date().toISOString(),
-      wordCount: countWords(content),
+      wordCount: countWords(validatedData.content),
     };
 
     // Guardar en Supabase
     await saveSkill(skill);
 
-    // Revalidar sitemap para que incluya la nueva skill
+    // Revalidar sitemap
     revalidatePath('/sitemap.xml');
 
     return NextResponse.json({ success: true, skill });

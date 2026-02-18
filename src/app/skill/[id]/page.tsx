@@ -4,6 +4,7 @@ import { Skill } from '@/types/skill';
 import { getSkillById } from '@/lib/supabase';
 import ShareButton from './ShareButton';
 import SkillContent from './SkillContent';
+import VoteButton from './VoteButton';
 
 // Forzar renderizado dinámico - las skills se crean en runtime
 export const dynamic = 'force-dynamic';
@@ -13,7 +14,7 @@ async function getSkill(id: string): Promise<Skill | null> {
   return getSkillById(id);
 }
 
-// Metadata dinámico para cada skill
+// Metadata dinámica para cada skill
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
   const skill = await getSkill(id);
@@ -113,7 +114,7 @@ export default async function SkillPage({ params }: { params: Promise<{ id: stri
             "@context": "https://schema.org",
             "@type": "CreativeWork",
             name: skill.displayName,
-            description: skill.description || `A fake skill for Claude Code: ${skill.prompt}`,
+            description: skill.description || `A fake skill for Claude Code: ${skill.originalPrompt}`,
             url: `https://skillbluff.arizkuren.net/skill/${id}`,
             author: {
               "@type": "Organization",
@@ -149,7 +150,7 @@ export default async function SkillPage({ params }: { params: Promise<{ id: stri
         {/* Skill Header */}
         <div className="skill-card mb-8">
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-6">
-            <div>
+            <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-3xl">🎭</span>
                 <span className="fake-badge">
@@ -159,17 +160,45 @@ export default async function SkillPage({ params }: { params: Promise<{ id: stri
               <h1 className="text-3xl md:text-4xl font-bold text-gradient-fake mb-2">
                 {skill.displayName}
               </h1>
+              {/* Tags como hashtags */}
+              {skill.tags && skill.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {skill.tags.map((tag, i) => (
+                    <span key={i} className="hashtag-pill">
+                      <span className="text-[#ff6b9d]">#</span>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
               <p className="text-[#888] text-sm max-w-xl">
                 {skill.description || 'A completely unnecessary solution to a problem that probably does not exist.'}
               </p>
             </div>
-            <div className="flex flex-col items-start md:items-end gap-2">
+            <div className="flex flex-col items-start md:items-end gap-2 shrink-0">
               <span className="suspicious-badge">
                 <span className="w-1.5 h-1.5 bg-[#39ff14] rounded-full animate-pulse"></span>
                 UNVERIFIED
               </span>
               <span className="text-xs text-[#555] font-mono">{skill.language}</span>
-              <span className="text-xs text-[#ff6b9d]">~{skill.wordCount} words of nonsense</span>
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-[#ff6b9d]">~{skill.wordCount} words of nonsense</span>
+                {/* Botón de votos - header */}
+                <VoteButton skillId={skill.id} initialVotes={skill.votesCount} variant="header" />
+              </div>
+              {/* Uselessness score como barra visual */}
+              <div className="mt-2">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-[10px] text-[#555] uppercase tracking-wider">Uselessness</span>
+                  <span className="text-xs font-mono text-[#ff6b9d]">{skill.uselessnessScore}/10</span>
+                </div>
+                <div className="w-24 h-1.5 bg-[#2a2a2a] rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-[#ff6b9d] to-[#ffd700] transition-all duration-500"
+                    style={{ width: `${skill.uselessnessScore * 10}%` }}
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
@@ -195,6 +224,24 @@ export default async function SkillPage({ params }: { params: Promise<{ id: stri
             </div>
           </div>
         </div>
+
+        {/* Warnings destacados del skill si existen */}
+        {skill.warnings && skill.warnings.length > 0 && (
+          <div className="warnings-box mb-6">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xl">⚠️</span>
+              <span className="text-sm font-semibold text-[#ff6b9d]">Advertencias obligatorias</span>
+            </div>
+            <div className="space-y-1">
+              {skill.warnings.map((warning, i) => (
+                <div key={i} className="warning-item">
+                  <span className="text-[#ff6b9d] shrink-0">▸</span>
+                  <span>{warning}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Skill Content */}
         <div className="mb-8">
@@ -234,7 +281,7 @@ export default async function SkillPage({ params }: { params: Promise<{ id: stri
             <span>💭</span> Original Misguided Request
           </h3>
           <blockquote className="border-l-2 border-[#ff6b9d] pl-4 py-2">
-            <p className="text-[#aaa] italic">"{skill.prompt}"</p>
+            <p className="text-[#aaa] italic">"{skill.originalPrompt}"</p>
           </blockquote>
           <p className="text-xs text-[#555] mt-3">
             Someone actually thought this was a good idea to automate.
@@ -256,6 +303,11 @@ export default async function SkillPage({ params }: { params: Promise<{ id: stri
           </div>
         </div>
 
+        {/* Botón de voto - footer */}
+        <div className="mb-6">
+          <VoteButton skillId={skill.id} initialVotes={skill.votesCount} variant="footer" />
+        </div>
+
         {/* Actions */}
         <div className="flex flex-wrap items-center gap-4">
           <ShareButton />
@@ -274,5 +326,6 @@ export default async function SkillPage({ params }: { params: Promise<{ id: stri
         </div>
       </div>
     </main>
-  </>);
+  </>
+  );
 }
