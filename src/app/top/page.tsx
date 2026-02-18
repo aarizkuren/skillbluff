@@ -169,7 +169,7 @@ export default function TopPage() {
           <div className="py-16 text-center">
             <div className="text-6xl mb-4">📭</div>
             <p className="text-[#888] text-lg mb-4">Aún no hay skills votadas.</p>
-            <p className="text-[#555] text-sm mb-6">Sé el primero en crear una.</span>
+            <p className="text-[#555] text-sm mb-6">Sé el primero en crear una.</p>
             <Link href="/" className="btn-fake-primary">
               🎭 Crear la primera
             </Link>

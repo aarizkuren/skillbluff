@@ -1,3 +1,5 @@
+"use server";
+
 import { Ollama } from 'ollama';
 import { FakeSkillInput } from '@/types/skill';
 
