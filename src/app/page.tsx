@@ -196,8 +196,8 @@ export default function HomePage() {
             ))}
           </div>
 
-          {/* Navigation to Top */}
-          <div className="mt-8 text-center">
+          {/* Navigation */}
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/top"
               className="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-[#ffd700]/10 to-[#ff6b9d]/10 border border-[#ffd700]/30 rounded-full text-[#ffd700] hover:border-[#ffd700]/50 hover:from-[#ffd700]/15 hover:to-[#ff6b9d]/15 transition-all"
@@ -205,6 +205,15 @@ export default function HomePage() {
               <span className="text-lg">🏆</span>
               <span className="font-medium">Hall of Shame</span>
               <span className="text-xs text-[#888]">Las más votadas →</span>
+            </Link>
+            
+            <Link
+              href="/random"
+              className="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-[#39ff14]/10 to-[#00d9ff]/10 border border-[#39ff14]/30 rounded-full text-[#39ff14] hover:border-[#39ff14]/50 hover:from-[#39ff14]/15 hover:to-[#00d9ff]/15 transition-all"
+            >
+              <span className="text-lg">🎲</span>
+              <span className="font-medium">Skill Aleatoria</span>
+              <span className="text-xs text-[#888]">Descubre →</span>
             </Link>
           </div>
 

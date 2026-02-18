@@ -72,6 +72,23 @@ export async function saveSkill(skill: Skill): Promise<void> {
   }
 }
 
+export async function getRandomSkill(): Promise<Skill | null> {
+  const { data, error } = await supabase
+    .from('skills')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(100);
+  
+  if (error || !data || data.length === 0) {
+    console.error('Error loading random skill:', error);
+    return null;
+  }
+  
+  // Seleccionar aleatoriamente entre las 100 más recientes
+  const randomIndex = Math.floor(Math.random() * data.length);
+  return mapSupabaseToSkill(data[randomIndex]);
+}
+
 export async function getSkillById(id: string): Promise<Skill | null> {
   const { data, error } = await supabase
     .from('skills')
